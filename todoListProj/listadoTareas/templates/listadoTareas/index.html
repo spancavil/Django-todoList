@@ -5,7 +5,7 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>TodoList App</title>
+		<title>Mini Trello</title>
 
 		<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
 
@@ -19,15 +19,17 @@
 			
 			<div class="row">
 				<div class="col-lg-4 col-lg-offset-4" id="content">
-					<h1>What to do today </h1>
+					<h1>Qué hago hoy?</h1>
 					
-					<form action="#" method="POST" role="form">
-					
+					<form action="{% url 'add' %}" method="POST" role="form">
+						<!-- csrf token sería como una llave única que el server le entrega al client, y que luego el cliente debería
+						utilizar en los siguientes request-->
+						{% csrf_token %}
 						<div class="form-group">
 							<div class="input-group">
-							  <input type="text" class="form-control" placeholder="Enter todo e.g. Wash my car" aria-label="Todo" aria-describedby="add-btn">
+								{{form.text}}
 							  <span class="input-group-btn">
-								  <button type="submit" class="btn btn-default" id="add-btn">ADD</button>
+								  <button type="submit" class="btn btn-default" id="add-btn">AGREGAR</button>
 							  </span>
 							</div>
 						</div>
@@ -37,14 +39,18 @@
 						<div class="col-lg-12">
 							<div class="btn-toolbar">
 								<div class="btn-group">
-									<button type="button" class="btn btn-warning">
-										<i class="glyphicon glyphicon-trash"></i> DELETE COMPLETED
-									</button>
+									<a href="{% url 'borrarCompletada' %}">
+										<button type="button" class="btn btn-warning">
+											<i class="glyphicon glyphicon-trash"></i> BORRAR COMPLETADAS
+										</button>
+									</a>
 								</div>
 								<div class="btn-group">
-									<button type="button" class="btn btn-danger">
-										<i class="glyphicon glyphicon-trash"></i> DELETE ALL
-									</button>
+									<a href="{% url 'borrarTodo' %}">
+										<button type="button" class="btn btn-danger">
+											<i class="glyphicon glyphicon-trash"></i> BORRAR TODO
+										</button>
+									</a>
 								</div>
 							</div>
 						</div>
@@ -56,7 +62,8 @@
 							{% if tarea.completed %}
 							<li class="list-group-item todo-completed">{{tarea.text}}</li>
 							{% else %}
-							<a href="#"><li class="list-group-item">{{tarea.text}}</li></a>
+							<!--Le pasamos el link dinámicamente: la hacer click, irá hacia completed (en los URL Pattern) y le pasamos por parámetro también el id de la tarea correspondiente-->
+							<a href="{% url 'completada' tarea.id %}"><li class="list-group-item">{{tarea.text}}</li></a>
 							{% endif %}
 						{% endfor%}
 						<!--Tareas hardcodeadas-->
@@ -69,7 +76,7 @@
 			<footer>
 				<div class="row pad">
 					<div class="col-lg-12 text-center">
-						Copyright &copy; Bluelime Learning 2018 
+						Sebastián Ancavil, 2021
 					</div>
 				</div>
 			</footer>
